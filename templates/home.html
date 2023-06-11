@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+{% block title %}
+    Recipe Book
+{% endblock title %}
+{% block content %}
+<div class="search-div">
+<input types="search" onkeyup="myFilter()" class="search-bar" name="q" placeholder="Search Recipe"/> 
+<i class="fa-solid fa-magnifying-glass"></i>
+</div>
+<select id="select-tag" class="tag-select"  onchange="tagFilter()" placeholder="Select a Tag" >
+    <option selected="selected" value="" >Select a language</option>
+    {% for tag in tags %}
+    <option value="{{ tag.name }}">{{ tag.name }}</option>
+    {% endfor %}
+</select>
+<div class="tag-list">
+</div>
+<p class="no-recipe hidden">No Recipes Found!</p>
+<div class="recipe-list">
+    {% for recipe in recipe_list %}
+        <div class="recipe-card">
+            <div class="recipe-image-div">
+                <img class="recipe-image" src="{{ recipe.image.url }}" alt="{{ recipe.name }}"/>
+            </div>
+            <div class="recipe-details">
+            <div class="recipe-heading">
+                <p class="recipe-name"><a href="{% url 'recipe_detail' recipe.pk %}">{{ recipe.name }}</a></p>
+                <p class="recipe-author"><a href="{% url 'user_recipe_list' recipe.author.username %}">{{ recipe.author.username }}</a></p>
+            </div>            
+            <div class="recipe-tags">
+                {% for tag in recipe.tags.all %}
+                    <span class="recipe-tag">{{ tag.name }}</span>
+                {% empty %}
+                    <span class="recipe-tag recipe-tag-empty"> n</span>
+                {% endfor %}
+                
+            </div>
+            {% if user in recipe.upvotes.all %} 
+                <a class="votes voted" id="{{ recipe.id }}" onclick="voteToggle('{{recipe.id}}')"><span>{{ recipe.upvotes.all.count }} upvote{{ recipe.upvotes.all.count|pluralize }}</span></a>
+            {% else %}
+                <a class="votes" id="{{ recipe.id }}" onclick="voteToggle('{{recipe.id}}')"><span>{{ recipe.upvotes.all.count }} upvote{{ recipe.upvotes.all.count|pluralize }}</span></a>
+            {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock content %}
+{% block javascript %}
+<script>
+var container = document.querySelector('.container')
+container.classList.add('container-for-auth')
+document.getElementById('home').classList.add('nav-active');
+let recipe_list = document.querySelector('.recipe-list');
+if (recipe_list.childElementCount < 3) {
+    recipe_list.classList.add('recipe-list-less')
+}
+
+
+
+async function voteToggle(id) {
+    user = "{{ user.username }}";
+    if (user) {
+        let voteButton = document.getElementById(id);
+        let flag = 0;
+        if (voteButton.classList.contains('voted')) {
+            flag = 1;
+        }
+        voteButton.classList.toggle('voted');
+        let url = "{% url 'vote_toggle' %}"
+        let formdata = new FormData();
+        formdata.append('username', '{{ user.username }}');
+        formdata.append('id', id);
+        if (flag) {
+            formdata.append('op' , 'unlike');
+        }
+        else {
+            formdata.append('op' , 'like');
+
+        }
+        const response = await fetch(url,
+        {
+        method : "POST", 
+        headers: {'X-CSRFToken': '{{ csrf_token }}'},
+            mode : 'same-origin',
+            body : formdata,
+        });
+        let data = await response.json();
+        let count = parseInt( voteButton.firstElementChild.innerHTML );
+        if (data.flag == 1) {
+           count++; 
+        }
+        else {
+           count--; 
+        }
+        voteButton.firstElementChild.innerHTML = String(count) + (count > 1 ? " upvotes" : " upvote");
+    }
+}
+
+function myFilter() {
+    document.querySelector('.tag-select').value = "";
+    var input, filter, ul, li, a, i, txtValue, clear;
+    input = document.querySelector('.search-bar');
+    filter = input.value.toUpperCase();
+    ul = document.querySelector(".recipe-list");
+    li = document.getElementsByClassName('recipe-card');
+    let flag = 0;
+    for (i = 0; i < li.length; i++) {
+        let name = li[i].querySelector('.recipe-name');
+        txtValue = name.firstElementChild.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+            flag = 1;
+        } else {
+            li[i].style.display = "none";
+        }
+        //let tag_list = li[i].querySelector('.recipe-tags');
+        //let tags = tag_list.getElementsByClassName('recipe-tag');
+        //for (j = 0; j < tags.length; j++) {
+            //txtValue = tags[j].innerText;
+            //if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                //li[i].style.display = "";
+            //} else {
+                //li[i].style.display = "none";
+            //}
+        //}
+    }
+    if (!flag) {
+        document.querySelector('.no-recipe').classList.remove('hidden');
+    }
+    else {
+        document.querySelector('.no-recipe').classList.add('hidden');
+    }
+}
+
+function tagFilter() {
+    document.querySelector('.search-bar').value = "";
+    var input, filter, ul, li, a, i, txtValue, clear;
+    input = document.querySelector('.tag-select');
+    filter = input.value.toUpperCase();
+    console.log(filter);
+    ul = document.querySelector(".recipe-list");
+    li = document.getElementsByClassName('recipe-card');
+    let flag = 0, temp = 0;
+    for (i = 0; i < li.length; i++) {
+            let tag_list = li[i].querySelector('.recipe-tags');
+            let tags = tag_list.getElementsByClassName('recipe-tag');
+            temp = 0;
+            for (j = 0; j < tags.length; j++) {
+                txtValue = tags[j].innerText.toUpperCase();
+                console.log(txtValue);
+                if (txtValue.indexOf(filter) > -1) {
+                    flag = 1;
+                    temp = 1;
+                } 
+            }
+            if (temp) {
+                li[i].style.display = "";
+            }
+            else {
+                li[i].style.display = "none";
+            }
+    }
+    if (!flag) {
+        document.querySelector('.no-recipe').classList.remove('hidden');
+    }
+    else {
+        document.querySelector('.no-recipe').classList.add('hidden');
+    }
+}
+
+new TomSelect("#select-tag",{
+    create: false,
+    sortField: {
+        field: "text",
+        direction: "asc"
+    }
+});
+
+
+</script>
+
+
+{% endblock javascript %}
+

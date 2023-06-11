@@ -1,0 +1,28 @@
+Teaspoon
+tsp
+Tablespoon
+tbsp
+Cup
+cup
+Pint
+pt
+Quart
+qt
+Gallon
+gal
+Ounce
+oz
+Fluid ounce
+fl oz
+Pound
+lb
+Milliliter
+mL
+Liter
+L
+Gram
+g
+Kilogram
+kg
+Count
+count

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}
+    Delete {{ recipe.name }}
+{% endblock title %}
+{% block content %}
+    <div>
+        <form  id="delete-form" method="post">
+            {% csrf_token %}
+            <p class="delete-prompt">Are you sure you want to delete "{{ recipe.name }}"?</p>
+                <p class="delete-options">
+                    <button class="delete-submit" type="submit" form="delete-form"  value="Submit">Delete</button>
+                    <button class="delete-submit delete-cancel"><a href="{% url 'recipe_detail' recipe.pk %}">Cancel</a></button>
+                </p>
+            </form>
+    </div>
+{% endblock content %}
+{% block javascript %}
+<script>
+  var container = document.querySelector('.container')
+  container.classList.add('container-for-auth')
+</script>
+
+
+{% endblock javascript %}
+

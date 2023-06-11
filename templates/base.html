@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{% block title %}{% endblock title %}</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link href="https://cdn.jsdelivr.net/npm/tom-select@2.0.0-rc.4/dist/css/tom-select.css" rel="stylesheet">
+        <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+        <script src="https://cdn.jsdelivr.net/npm/tom-select@2.0.0-rc.4/dist/js/tom-select.complete.min.js"></script>
+    </head>
+    <body>
+            <header class="mainheader">
+                    <h1 class="mainheading-icon"><i class="fa-solid fa-circle-check"></i><span class="mainheading">Recipe<span style="color:#ffb900;">B</span>ook</span></h1>
+                {% if user.is_authenticated %}
+                <form id="logout-form" action="accounts/logout/" method="post">
+                    {% csrf_token %}
+                    <span class="logout" onclick="document.getElementById('logout-form').submit()">Log out</span>
+                </form>
+                {% else %}
+                    <span class="logout"><a href="{% url 'account_login' %}">Log In</a></span>
+                {% endif %}
+            </header>
+            <div class="nav">
+                <span ><a class="nav-items" id="home" href="{% url 'home' %}">Home</a></span> 
+                <!-- <span ><a class="nav-items" id="my-ingredients">My Ingredients</a></span>  -->
+                {% if user.is_authenticated %}
+                    <span ><a class="nav-items" id="my-recipe" href="{% url 'user_recipe_list' user.username %}">My Recipes</a></span> 
+                {% else %} 
+                    <span ><a class="nav-items" id="my-recipe" href="{% url 'account_login'%}">My Recipes</a></span> 
+                {% endif %}
+                
+
+            </div>
+        <div class="container" >
+            {% block content %}
+            {% endblock content %}
+        </div>
+        {% block javascript %}
+        {% endblock javascript %}
+    </body>
+</html>

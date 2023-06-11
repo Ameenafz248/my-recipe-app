@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}
+    {{ recipe.name }}
+{% endblock title %}
+{% block content %}
+<div class="recipe-single-detail">
+<h1 class="recipe-single-name">{{ recipe.name }}</h1>
+<div class="recipe-single-image-div">
+    <img class="recipe-single-image" src="{{ recipe.image.url }}" alt="{{ recipe.name }}"/>
+</div>
+<div class="recipe-single-block">
+    <h2 class="recipe-single-subheading">Ingredients</h2>
+    <table class="recipe-table">
+    <thead>
+        <th></th>
+        <th></th>
+        <th></th>
+    </thead>
+    <tbody>
+        {% for recipeingredient in recipe.recipeingredients.all %}
+        <tr>
+            <td class="recipe-ingredient">{{ recipeingredient.ingredient.name }}</td>
+            <td class="recipe-ingredient">{{ recipeingredient.amount }}</td>
+            <td class="recipe-ingredient">{{ recipeingredient.unit.abbreviation }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+</div>
+<div class="recipe-single-block">
+    <h2 class="recipe-single-subheading">Steps</h2>
+    <p class="recipe-description">{{ recipe.description|linebreaksbr }}</p>
+</div>
+    {% if recipe.author == user %}
+        <p class="delete-btn"><a href={% url 'delete' recipe.pk %}>Delete Recipe</a></p>
+    {% endif %}
+</div>
+{% endblock content %}
+{% block javascript %}
+<script>
+  var container = document.querySelector('.container')
+  container.classList.add('container-for-auth')
+</script>
+
+
+{% endblock javascript %}
+

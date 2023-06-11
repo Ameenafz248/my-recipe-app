@@ -1,0 +1,250 @@
+{% extends 'base.html' %}
+{% block title %}
+    Create a Recipe
+{% endblock title %}
+{% block content %}
+
+<div class="recipe-single-detail create-detail " >
+    <form   action="" method="POST" enctype="multipart/form-data" id="createForm">
+        {% csrf_token %}
+        <!-- <select name="ingredients" required id="id_ingredients" multiple style="display:none;">
+            <option>sdf</option>
+        </select>
+        <select name="tags" id="id_tags" multiple style="display:none;">
+            <option>sdf</option>
+        </select>         -->
+    <p class="recipe-create-name">
+    <!-- <label for="id_name">Name:</label> -->
+    <input id="name_pos" placeholder="Name" type="text" name="name" maxlength="25" required id="id_name">
+    </p>
+    <p>
+    <input type="hidden" style="display:hidden;" name="ing" id="ing" value="" />
+    <input type="hidden"  style="display:hidden;"name="ta" id="ta" value="" />
+    <div class="add-ingredient">
+    <input list="ingredients"  id="ingredient" placeholder="Ingredient">
+    <datalist id="ingredients">
+        {% for y in ingredients %}
+            <option value="{{ y.name }}">{{ y.name }}</option>
+        {% endfor %}
+    </datalist>
+    <input type="number" id="amount" step=0.1 placeholder="Amount"/>
+    <input list="units"  id="unit" placeholder="Unit">
+    <datalist id="units">
+        {% for unit in units %}
+            <option value="{{ unit.name }}">{{ unit.name }}</option>
+        {% endfor %}
+    </datalist>
+    <button  class="sub-button sub-button-inactive" id="add-ingredient-btn">Add Ingredient</button>
+    </div>
+    <ul class="ingredient-list" id="ingredient-list">
+    </ul>
+    <div class="add-ingredient add-tag">
+    <input list="tags" placeholder="Tag"  id="tag">
+    <datalist id="tags">
+        {% for  y in tags %}
+            <option value="{{ y.name }}">{{ y.name }}</option>
+        {% endfor %}
+    </datalist>
+    <button class="sub-button sub-button-inactive" id="add-tag-btn">Add Tag</button>
+    </div>
+    <ul class="ingredient-list" id="tag-list">
+    </ul>
+    <div class="add-ingredient add-description">
+    <label for="id_description">Instructions:</label>
+    <textarea name="description" cols="40" rows="10" id="id_description" >
+    </textarea>
+    </div>
+
+    <p class="recipe-image-create-div">
+    <label for="id_image" class="recipe-image-btn" >Select an Image of the Dish</label>
+    <input type="file"  name="image" accept="image/*" required id="id_image">
+    </p>
+        <button class="sub-button submit-btn">Submit</button>
+    </form> 
+
+</div>
+{% endblock content %}
+{% block javascript %}
+<script>
+    var container = document.querySelector('.container')
+    container.classList.add('container-for-auth')
+
+    document.getElementById('ingredient').addEventListener('input', function() {
+        let ingredient = document.getElementById('ingredient'),
+        amount = document.getElementById('amount'),
+        unit = document.getElementById('unit'),
+        btn = document.getElementById('add-ingredient-btn');
+        if (ingredient.value == "" || amount.value == "" || unit.value == "") {
+           btn.classList.add('sub-button-inactive');
+        }
+        else {
+           btn.classList.remove('sub-button-inactive');
+        }
+    });
+
+    document.getElementById('amount').addEventListener('input', function() {
+        let ingredient = document.getElementById('ingredient'),
+        amount = document.getElementById('amount'),
+        unit = document.getElementById('unit'),
+        btn = document.getElementById('add-ingredient-btn');
+        if (ingredient.value == "" || amount.value == "" || unit.value == "") {
+           btn.classList.add('sub-button-inactive');
+        }
+        else {
+           btn.classList.remove('sub-button-inactive');
+        }
+    });
+
+    document.getElementById('unit').addEventListener('input', function() {
+        let ingredient = document.getElementById('ingredient'),
+        amount = document.getElementById('amount'),
+        unit = document.getElementById('unit'),
+        btn = document.getElementById('add-ingredient-btn');
+        if (ingredient.value == "" || amount.value == "" || unit.value == "") {
+           btn.classList.add('sub-button-inactive');
+        }
+        else {
+           btn.classList.remove('sub-button-inactive');
+        }
+    });
+
+    document.getElementById('add-tag-btn').addEventListener('click', function(event) {
+        event.preventDefault();
+        let tag = document.getElementById('tag'),
+        btn = document.getElementById('add-tag-btn');
+        if (btn.classList.contains('sub-button-inactive')) {
+            return;
+        }
+        let li = document.createElement('li');
+        li.classList.add('tag-element');
+        let span = document.createElement('span');
+        let remButton = document.createElement('button');
+        span.innerHTML = tag.value; 
+        remButton.innerHTML = "remove";
+        li.append(span);
+        li.append(remButton);
+        remButton.setAttribute('onclick', 'removeIngredient(event, this)');
+        document.getElementById('tag-list').append(li);
+        tag.value = "";
+        btn.classList.add('sub-button-inactive');
+        
+    });
+
+    document.getElementById('add-tag-btn').addEventListener('focus', function(event) {
+        btn = document.getElementById('add-tag-btn');
+        btn.onkeypress = function(e) {
+        var key = e.charCode || e.keyCode || 0;     
+        if (key == 13) {
+          e.preventDefault();
+          btn.click();
+        }
+      }
+    });
+
+    document.getElementById('add-ingredient-btn').addEventListener('focus', function(event) {
+        btn = document.getElementById('add-ingredient-btn');
+        btn.onkeypress = function(e) {
+        var key = e.charCode || e.keyCode || 0;     
+        if (key == 13) {
+          e.preventDefault();
+          btn.click();
+        }
+      }
+    });
+
+    document.getElementById('add-ingredient-btn').addEventListener('click', function(event) {
+        event.preventDefault();
+        let ingredient = document.getElementById('ingredient'),
+        amount = document.getElementById('amount'),
+        unit = document.getElementById('unit'),
+        btn = document.getElementById('add-ingredient-btn');
+        if (btn.classList.contains('sub-button-inactive')) {
+            return;
+        }
+        let li = document.createElement('li');
+        let spanIng = document.createElement('span');
+        let spanUni = document.createElement('span');
+        let spanAmo = document.createElement('span');
+        let remButton = document.createElement('button');
+        remButton.innerHTML = "remove";
+        spanIng.innerHTML = ingredient.value;
+        spanUni.innerHTML = unit.value;
+        spanAmo.innerHTML = amount.value;
+        li.append(spanIng);
+        li.append(spanAmo);
+        li.append(spanUni);
+        li.append(remButton);
+        document.querySelector('.ingredient-list').append(li);
+        remButton.setAttribute('onclick', 'removeIngredient(event, this)');
+        amount.value = "";
+        unit.value = "";
+        ingredient.value = "";
+        btn.classList.add('sub-button-inactive');
+    });
+
+    
+    document.getElementById('tag').addEventListener('input', function() {
+        let tag = document.getElementById('tag'),
+        btn = document.getElementById('add-tag-btn');
+        if (tag.value == "") {
+           btn.classList.add('sub-button-inactive');
+        }
+        else {
+           btn.classList.remove('sub-button-inactive');
+        }
+    });
+
+
+    //var newForm = document.getElementById('createForm');
+
+    //newForm.onkeypress = function(e) {
+     //   var key = e.charCode || e.keyCode || 0;     
+      //  if (key == 13) {
+       //   e.preventDefault();
+        //}
+      //}
+    
+    function removeIngredient(event, ele) {
+        event.preventDefault(); 
+        ele.parentNode.remove();
+    }
+    document.getElementById('createForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        let arr = [];
+        let ingList  = document.getElementById('ingredient-list'); 
+        let li = ingList.getElementsByTagName('li');
+        for (i = 0; i < li.length; i++) {
+            childs = li[i].children;
+            arr.push({'ingredient' : childs.item(0).innerHTML, 'amount' : childs.item(1).innerHTML, 'unit' : childs.item(2).innerHTML})
+        }
+        document.getElementById('ing').value = JSON.stringify(arr);
+        arr = []
+        let tagList  = document.getElementById('tag-list'); 
+        li = tagList.getElementsByTagName('li');
+        for (i = 0; i < li.length; i++) {
+            childs = li[i].children;
+            arr.push({'tagname' : childs.item(0).innerHTML});
+        }
+        document.getElementById('ta').value = JSON.stringify(arr);
+        let form = document.getElementById('createForm'); 
+        let formdata = new FormData(form)
+        url = ""
+        fetch(url, 
+        {
+        method : "POST", 
+        redirect : 'follow',
+        headers: {'X-CSRFToken': '{{ csrf_token }}'},
+            mode : 'same-origin',
+            body : formdata,
+        }).then(Response => {
+            if (Response.redirected) {
+                window.location.href = Response.url;
+            }
+        }).catch(function(err) {
+            console.info(err + " url: " + url);
+        });
+      });
+      
+</script>
+{% endblock javascript %}
+
