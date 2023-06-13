@@ -14,7 +14,7 @@
             <header class="mainheader">
                     <h1 class="mainheading-icon"><i class="fa-solid fa-circle-check"></i><span class="mainheading">Recipe<span style="color:#ffb900;">B</span>ook</span></h1>
                 {% if user.is_authenticated %}
-                <form id="logout-form" action="accounts/logout/" method="post">
+                <form id="logout-form" action="{% url 'account_logout' %}" method="post">
                     {% csrf_token %}
                     <span class="logout" onclick="document.getElementById('logout-form').submit()">Log out</span>
                 </form>
@@ -30,6 +30,8 @@
                 {% else %} 
                     <span ><a class="nav-items" id="my-recipe" href="{% url 'account_login'%}">My Recipes</a></span> 
                 {% endif %}
+                {% block nav-items %}
+                {% endblock nav-items%}
                 
 
             </div>

@@ -11,6 +11,9 @@ from django.contrib.auth import get_user_model
 from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
 from django.views.decorators.http import require_POST
 from django.urls import reverse_lazy
+from django.core.mail import send_mail
+from django.conf import settings
+
 
 
 class UserRecipeListView(ListView, LoginRequiredMixin):
@@ -96,11 +99,14 @@ class RecipeCreateView(CreateView):
         recipe = self.object; 
         for ing in arr:
             ingredient = Ingredient.objects.get_or_create(name=ing['ingredient'])
-            unit = Unit.objects.get(name=ing['unit'])
-            if (unit is None):
-                unit = Unit.objects.create(name=ing['unit'], abbreviation=ing['unit'][:3])
+            unit = Unit.objects.get_or_create(name=ing['unit'])
+            # if (unit is None):
+            #     unit = Unit.objects.create(name=ing['unit'], abbreviation=ing['unit'][:3])
+            if (unit[0].abbreviation == ""):
+                unit[0].abbreviation = unit[0].name[:3]
+                unit[0].save()
             amount = ing['amount']
-            RecipeIngredient.objects.create(ingredient=ingredient[0], recipe=recipe, unit=unit, amount=amount)
+            RecipeIngredient.objects.create(ingredient=ingredient[0], recipe=recipe, unit=unit[0], amount=amount)
         arr = form.data.get('ta')
         arr = json.loads(arr)
         for tagTemp in arr:

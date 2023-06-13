@@ -2,13 +2,24 @@
 {% block title %}
     Recipe Book
 {% endblock title %}
+
+<!-- {% block nav-items %}
+<select id="select-tag" class="tag-select"  onchange="tagFilter()" placeholder="Select a Tag" >
+    <option selected="selected" value="" >Select a Tag</option>
+    {% for tag in tags %}
+    <option value="{{ tag.name }}">{{ tag.name }}</option>
+    {% endfor %}
+</select>
+<div class="tag-list">
+</div>
+{% endblock nav-items %} -->
 {% block content %}
 <div class="search-div">
 <input types="search" onkeyup="myFilter()" class="search-bar" name="q" placeholder="Search Recipe"/> 
 <i class="fa-solid fa-magnifying-glass"></i>
 </div>
 <select id="select-tag" class="tag-select"  onchange="tagFilter()" placeholder="Select a Tag" >
-    <option selected="selected" value="" >Select a language</option>
+    <option selected="selected" value="" >Select a Tag</option>
     {% for tag in tags %}
     <option value="{{ tag.name }}">{{ tag.name }}</option>
     {% endfor %}
@@ -25,21 +36,25 @@
             <div class="recipe-details">
             <div class="recipe-heading">
                 <p class="recipe-name"><a href="{% url 'recipe_detail' recipe.pk %}">{{ recipe.name }}</a></p>
-                <p class="recipe-author"><a href="{% url 'user_recipe_list' recipe.author.username %}">{{ recipe.author.username }}</a></p>
             </div>            
-            <div class="recipe-tags">
+            <!-- <div class="recipe-tags">
                 {% for tag in recipe.tags.all %}
                     <span class="recipe-tag">{{ tag.name }}</span>
                 {% empty %}
                     <span class="recipe-tag recipe-tag-empty"> n</span>
                 {% endfor %}
                 
-            </div>
-            {% if user in recipe.upvotes.all %} 
-                <a class="votes voted" id="{{ recipe.id }}" onclick="voteToggle('{{recipe.id}}')"><span>{{ recipe.upvotes.all.count }} upvote{{ recipe.upvotes.all.count|pluralize }}</span></a>
-            {% else %}
-                <a class="votes" id="{{ recipe.id }}" onclick="voteToggle('{{recipe.id}}')"><span>{{ recipe.upvotes.all.count }} upvote{{ recipe.upvotes.all.count|pluralize }}</span></a>
-            {% endif %}
+            </div> -->
+                <p class="recipe-author"><a href="{% url 'user_recipe_list' recipe.author.username %}">{{ recipe.author.username }}</a></p>
+                {% if user.is_authenticated %}
+                {% if user in recipe.upvotes.all %} 
+                    <a class="votes voted" id="{{ recipe.id }}" onclick="voteToggle('{{recipe.id}}')"><span>{{ recipe.upvotes.all.count }} upvote{{ recipe.upvotes.all.count|pluralize }}</span></a>
+                {% else %}
+                    <a class="votes" id="{{ recipe.id }}" onclick="voteToggle('{{recipe.id}}')"><span>{{ recipe.upvotes.all.count }} upvote{{ recipe.upvotes.all.count|pluralize }}</span></a>
+                {% endif %}
+                {% else %}
+                    <a class="votes" href="{% url 'account_login' %}"><span>{{ recipe.upvotes.all.count }} upvote{{ recipe.upvotes.all.count|pluralize }}</span></a>
+                {% endif %}
             </div>
         </div>
     {% endfor %}
