@@ -3,16 +3,6 @@
     Recipe Book
 {% endblock title %}
 
-<!-- {% block nav-items %}
-<select id="select-tag" class="tag-select"  onchange="tagFilter()" placeholder="Select a Tag" >
-    <option selected="selected" value="" >Select a Tag</option>
-    {% for tag in tags %}
-    <option value="{{ tag.name }}">{{ tag.name }}</option>
-    {% endfor %}
-</select>
-<div class="tag-list">
-</div>
-{% endblock nav-items %} -->
 {% block content %}
 <div class="search-div">
 <input types="search" onkeyup="myFilter()" class="search-bar" name="q" placeholder="Search Recipe"/> 

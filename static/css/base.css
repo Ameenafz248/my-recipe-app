@@ -50,8 +50,13 @@ td {
     text-align: center;
 }
 
+tr {
+    color : #001540;
+}
+
 tbody>tr:nth-child(odd) {
-    background-color: #ccc;
+    background-color: #001540;
+    color : white;
 }
 
 tbody>tr>:nth-child(1) {
@@ -427,18 +432,20 @@ img{
 
 .recipe-single-name {
     color : #ffb900;
-    font-size: 5rem;
+    font-size: 5.3rem;
     /* border-bottom: 0.1rem solid black; */
-    margin-bottom: 1rem;
+    /* margin-bottom: 0.3rem; */
     text-align: center;
 }
 
 .recipe-single-image-div {
     height : 40vh;
     width : 40%;
+    margin-bottom: 1rem;
 }
 
 .recipe-single-image {
+    object-fit: cover;
     width: 100%;
     height: 100%;
 }
@@ -450,15 +457,29 @@ img{
     align-items: center;
     justify-content: space-around;
     border-top : 0.3rem solid #1e2842;
-    border-bottom : 0.3rem solid #1e2842;
+    /* border-bottom : 0.3rem solid #1e2842; */
     margin : 1rem;
     padding : 1rem;
 }
 
 .recipe-single-subheading {
+    width : 100%;
+    text-align: left;
     font-size: 4rem;
     color : #2e3d65;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
+}
+
+.recipe-single-author {
+   color :#001540; 
+   font-size : 2rem;
+   margin-bottom: 2rem;
+   margin-top : 0;
+}
+
+
+.recipe-single-author a {
+    color : #421e3a;
 }
 
 .recipe-table {
@@ -1158,7 +1179,7 @@ label {
 
     .recipe-single-image-div {
         height : 40vh;
-        width : 80%;
+        width : 50%;
     }
 
     .recipe-single-detail {
@@ -1274,6 +1295,7 @@ label {
 
    .recipe-single-image-div {
         height : 30vh;
+        width : 60%;
    }
 
     .nav {
@@ -1300,10 +1322,18 @@ label {
         padding : 1rem;
     }
 
-    .ecipe-single-detail {
-        border-width : 1rem;
+    .recipe-single-image-div {
+        width : 90%;
     }
 
+    .recipe-single-detail {
+        padding-left : 0;
+        padding-right : 0;
+    }
+
+    .recipe-single-block {
+        padding : 1rem 0 1rem 0;
+    }
     .recipe-card {
         height : 33vh;
     }
@@ -1330,6 +1360,10 @@ label {
        height: 12vh;
     }
 
+
+    .recipe-single-detail {
+        padding : 2rem 0 2rem 0;
+    }
 
     .nav {
         padding : 2.3rem 4rem;

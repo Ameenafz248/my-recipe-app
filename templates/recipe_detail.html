@@ -5,6 +5,8 @@
 {% block content %}
 <div class="recipe-single-detail">
 <h1 class="recipe-single-name">{{ recipe.name }}</h1>
+<h2 class="recipe-single-author">By <a href="{% url 'user_recipe_list' recipe.author.username %}">{{ recipe.author.username }}</a></h2>
+
 <div class="recipe-single-image-div">
     <img class="recipe-single-image" src="{{ recipe.image.url }}" alt="{{ recipe.name }}"/>
 </div>
