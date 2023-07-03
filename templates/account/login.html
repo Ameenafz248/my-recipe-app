@@ -38,8 +38,10 @@ Log In
 
 {% block javascript %}
 <script>
+
   var container = document.querySelector('.container')
   container.classList.add('container-for-auth')
+  document.querySelector(".auth-input").focus();
 </script>
 {% endblock javascript %}
 

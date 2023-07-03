@@ -26,7 +26,7 @@ class Tag(models.Model):
 
 class Recipe(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length = 25)
+    name = models.CharField(max_length = 40)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     description = models.TextField(blank=True)
     upvotes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="recipes_voted", blank=True)

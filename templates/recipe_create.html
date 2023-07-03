@@ -15,7 +15,7 @@
         </select>         -->
     <p class="recipe-create-name">
     <!-- <label for="id_name">Name:</label> -->
-    <input id="name_pos" placeholder="Name" type="text" name="name" maxlength="25" required id="id_name">
+    <input id="name_pos" placeholder="Name" type="text" name="name" maxlength="40" required id="id_name">
     </p>
     <p>
     <input type="hidden" style="display:hidden;" name="ing" id="ing" value="" />
@@ -51,7 +51,7 @@
     </ul>
     <div class="add-ingredient add-description">
     <label for="id_description">Instructions:</label>
-    <textarea name="description" cols="40" rows="10" id="id_description" >
+    <textarea name="description" cols="40" rows="10" id="id_description" placeholder="Steps" >
     </textarea>
     </div>
 
@@ -127,7 +127,7 @@
         document.getElementById('tag-list').append(li);
         tag.value = "";
         btn.classList.add('sub-button-inactive');
-        
+        tag.focus();
     });
 
     document.getElementById('add-tag-btn').addEventListener('focus', function(event) {
@@ -180,6 +180,7 @@
         unit.value = "";
         ingredient.value = "";
         btn.classList.add('sub-button-inactive');
+        document.getElementById("ingredient").focus();
     });
 
     

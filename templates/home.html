@@ -4,7 +4,9 @@
 {% endblock title %}
 
 {% block content %}
-<div class="search-div">
+{% block user_list %}
+{% endblock user_list %}
+<div class="search-div hidden">
 <input types="search" onkeyup="myFilter()" class="search-bar" name="q" placeholder="Search Recipe"/> 
 <i class="fa-solid fa-magnifying-glass"></i>
 </div>
@@ -27,14 +29,14 @@
             <div class="recipe-heading">
                 <p class="recipe-name"><a href="{% url 'recipe_detail' recipe.pk %}">{{ recipe.name }}</a></p>
             </div>            
-            <!-- <div class="recipe-tags">
+            <div class="recipe-tags">
                 {% for tag in recipe.tags.all %}
                     <span class="recipe-tag">{{ tag.name }}</span>
                 {% empty %}
                     <span class="recipe-tag recipe-tag-empty"> n</span>
                 {% endfor %}
                 
-            </div> -->
+            </div>
                 <p class="recipe-author"><a href="{% url 'user_recipe_list' recipe.author.username %}">{{ recipe.author.username }}</a></p>
                 {% if user.is_authenticated %}
                 {% if user in recipe.upvotes.all %} 
@@ -52,12 +54,61 @@
 {% endblock content %}
 {% block javascript %}
 <script>
+{% block user_list_script %}
+document.getElementById('home').classList.add('nav-active');
+{% endblock user_list_script %}
+document.querySelector("#nav-search").classList.remove("hidden");
 var container = document.querySelector('.container')
 container.classList.add('container-for-auth')
-document.getElementById('home').classList.add('nav-active');
-let recipe_list = document.querySelector('.recipe-list');
+var recipe_list = document.querySelector('.recipe-list');
 if (recipe_list.childElementCount < 3) {
     recipe_list.classList.add('recipe-list-less')
+}
+
+
+document.querySelector(".search-bar").addEventListener('keydown', function(event) {
+    if (event.code == 'Escape') {
+        document.querySelector(".search-bar").blur();
+        document.getElementById("nav-search").click(); 
+    }
+})
+
+
+document.querySelector(".search-bar").addEventListener('click', function(event) {
+    if (document.querySelector(".search-bar").hasFocus()) {
+        document.getElementById("nav-search").click(); 
+    }
+})
+
+
+document.querySelector(".search-bar").addEventListener('blur', function(event) {
+    setTimeout(() => {
+        if (!document.querySelector(".search-div").classList.contains("hidden")) {
+            document.getElementById("nav-search").click(); 
+        }
+}, 500);
+})
+
+
+
+function searchToggle() {
+    let search_div = document.querySelector(".search-div");
+    document.getElementById("select-tag").classList.toggle("hidden");
+    let list = document.querySelectorAll(".tag-select");
+    let bar = document.querySelector(".search-bar");
+    let i = 0;
+    for (i = 0; i < list.length; ++i) {
+        list[i].classList.toggle("hidden");
+    }
+    if (search_div.classList.contains("hidden")) {
+        search_div.classList.remove("hidden");
+        bar.focus();
+    }
+    else {
+        bar.value = "";
+        myFilter();
+        search_div.classList.add("hidden");
+    }
 }
 
 
@@ -70,6 +121,14 @@ async function voteToggle(id) {
         if (voteButton.classList.contains('voted')) {
             flag = 1;
         }
+        let count = parseInt( voteButton.firstElementChild.innerHTML );
+        if (flag == 1) {
+           count--; 
+        }
+        else {
+           count++; 
+        }
+        voteButton.firstElementChild.innerHTML = String(count) + (count > 1 ? " upvotes" : " upvote");
         voteButton.classList.toggle('voted');
         let url = "{% url 'vote_toggle' %}"
         let formdata = new FormData();
@@ -90,14 +149,6 @@ async function voteToggle(id) {
             body : formdata,
         });
         let data = await response.json();
-        let count = parseInt( voteButton.firstElementChild.innerHTML );
-        if (data.flag == 1) {
-           count++; 
-        }
-        else {
-           count--; 
-        }
-        voteButton.firstElementChild.innerHTML = String(count) + (count > 1 ? " upvotes" : " upvote");
     }
 }
 

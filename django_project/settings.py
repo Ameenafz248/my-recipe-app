@@ -30,7 +30,7 @@ SECRET_KEY = env("DJANGO_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DJANGO_DEBUG", default=True)
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.1.16']
+ALLOWED_HOSTS = [ '192.168.1.16', '127.0.0.1', 'localhost']
 
 
 
@@ -146,19 +146,15 @@ AUTHENTICATION_BACKENDS = (
     "allauth.account.auth_backends.AuthenticationBackend"
 )
 
-EMAIL_HOST = 'smtp.sendgrid.net'
-EMAIL_HOST_USER = 'apikey'
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
-EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-DEFAULT_FROM_EMAIL = "ma6681221@gmail.com" 
-SENDGRID_ECHO_TO_STDOUT=False
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+DEFAULT_FROM_EMAIL = os.getenv("EMAIL_HOST_USER")
 
-SENDGRID_SANDBOX_MODE_IN_DEBUG = False
-FROM_EMAIL = 'ma6681221@gmail.com' # replace with your address
-SENDGRID_API_KEY = os.getenv('EMAIL_HOST_PASSWORD')
-EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
+
 
 LOGIN_REDIRECT_URL =  "home"
 ACCOUNT_LOGOUT_REDIRECT = "home"
